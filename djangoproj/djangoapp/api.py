@@ -1,11 +1,12 @@
 from ninja import NinjaAPI
 from .auth import CustomAuth
-from .schema import InputSchema, GetSignedUrl
+from .schema import InputSchema, GetSignedUrl, ChatHistoryOut
 import uuid, boto3, os
 from dotenv import load_dotenv
 from datetime import datetime 
 import json
-
+from .models import ChatHistory
+from typing import List
 load_dotenv()
 s3 = boto3.client('s3', 
     region_name= os.getenv("COGNITO_REGION"),
@@ -43,6 +44,31 @@ def get_uploaded_url(request, payload: GetSignedUrl):
         "timestamp": datetime.utcnow().isoformat()
     }
     return {"upload_url": presigned_url, "file_key": key}
+
+@api.get("/chat-history", response=List[ChatHistoryOut], auth=CustomAuth())
+def chat_history(request):
+    user = request.auth
+    user_email = user["email"]
+    chats = ChatHistory.objects.filter(user_email=user_email).order_by("-timestamp")[:50]
+    results = []
+    for ch in chats:
+        file_url = s3.generate_presigned_url(
+                ClientMethod='get_object', 
+                Params = {'Bucket': bucket_name, 'Key': entry.file_key}, 
+                ExpiresIn=600
+                )
+        results.append({
+            "timestamp" : entry.timestamp, 
+            "response" : entry.response, 
+            "file_url" : file_url, 
+            "sources_links" : entry.sources_links})
+    return results
+
+
+
+
+
+
 
 
 
