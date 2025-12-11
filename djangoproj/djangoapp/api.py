@@ -51,7 +51,7 @@ def chat_history(request):
     user_email = user["email"]
     chats = ChatHistory.objects.filter(user_email=user_email).order_by("-timestamp")[:50]
     results = []
-    for ch in chats:
+    for entry in chats:
         file_url = s3.generate_presigned_url(
                 ClientMethod='get_object', 
                 Params = {'Bucket': bucket_name, 'Key': entry.file_key}, 
@@ -59,7 +59,7 @@ def chat_history(request):
                 )
         results.append({
             "timestamp" : entry.timestamp, 
-            "response" : entry.response, 
+            "data" : entry.data, 
             "file_url" : file_url, 
             "sources_links" : entry.sources_links})
     return results

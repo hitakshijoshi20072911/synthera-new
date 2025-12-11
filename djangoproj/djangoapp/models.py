@@ -5,7 +5,7 @@ class ChatHistory(models.Model):
     id =models.CharField(primary_key=True)
     user_email = models.CharField(max_length=256)
     file_key= models.CharField(max_length=512)
-    response = models.TextField()
+    data = models.JSONField()
     timestamp = models.DateTimeField()
     sources_links= models.JSONField(default=list) 
     def __str__(self):
