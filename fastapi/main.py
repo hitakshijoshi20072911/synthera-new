@@ -15,6 +15,7 @@ load_dotenv()
 import boto3
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from fastapi.responses import Response
+from metrics import (REQUEST_COUNT, REQUEST_LATENCY, CACHE_HITS, CACHE_MISSES, ERROR_COUNT)
 
 
 s3 = boto3.client(
@@ -43,10 +44,12 @@ def metrics():
 # #     create_db_and_tables()
 @fast_app.post("/agent-run")
 async def run_agent(payload: UserInput, user=Depends(get_current_user), session:SessionDep= None):
+    start_time = time()
     try:
         content_hash = hashlib.sha256(f"{user['sub']}::{payload.user_input}".encode()).hexdigest()
         cached = redis_client.get(content_hash)
         if cached:
+            CACHE_HITS.inc()
             print("CACHE HIT: ", content_hash)
             cached_json = json.loads(cached)
             new_url = s3.generate_presigned_url(
@@ -58,8 +61,11 @@ async def run_agent(payload: UserInput, user=Depends(get_current_user), session:
                 ExpiresIn=3600
             )
             cached_json["pdf_url"] = new_url
+            REQUEST_COUNT.labels(status="cache_hit").inc()
+            REQUEST_LATENCY.observe(time() - start_time)
             return {"status": "success", "data" : cached_json}
         print("CACHE MISS: ", content_hash)
+        CACHE_MISSES.inc()
         db_user = session.get(User, user["email"])
         if not db_user:
             session.add(User(email=user["email"]))
@@ -75,8 +81,13 @@ async def run_agent(payload: UserInput, user=Depends(get_current_user), session:
         session.add(history)
         session.commit()
         session.refresh(history)
+        REQUEST_COUNT.labels(status="cache_miss").inc()
+        REQUEST_LATENCY.observe(time() - start_time)
         return {"status": "success", "data": result}
     except Exception as e:
+        ERROR_COUNT.inc()
+        REQUEST_COUNT.labels(status="errors").inc()
+        REQUEST_LATENCY.observe(time() - start_time)
         traceback.print_exc()
         raise HTTPException(
             status_code=500,
