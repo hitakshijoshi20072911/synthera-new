@@ -24,3 +24,4 @@ sqlmodel
 duckduckgo-search
 psycopg2-binary
 beautifulsoup4
+prometheus-client

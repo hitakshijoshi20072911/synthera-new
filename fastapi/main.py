@@ -13,6 +13,9 @@ from dotenv import load_dotenv
 from database import create_db_and_tables, ChatHistory, User, SessionDep, get_session
 load_dotenv()
 import boto3
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+from fastapi.responses import Response
+
 
 s3 = boto3.client(
     's3',
@@ -31,6 +34,10 @@ redis_client = Redis(
 class UserInput(BaseModel):
     user_input: str
 fast_app = FastAPI()
+@fast_app.get("/metrics")
+def metrics():
+    return Response(generate_latest(), media_type= CONTENT_TYPE_LATEST)
+
 # @fast_app.on_event("startup")
 # # def on_startup():
 # #     create_db_and_tables()
