@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field, Relationship, Column, JSON, create_engine, Session
 from datetime import datetime
-from typing import List, Annotated
+from typing import List, Annotated, Optional
 import uuid
 from fastapi import Depends
 import os
@@ -14,8 +14,8 @@ class User(SQLModel, table=True):
 
 class ChatHistory(SQLModel, table=True):
     id : str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
-    user_email = Field(foreign_key = "user.email")
-    user : List["User"] = Relationship(back_populates="chat_history")
+    user_email:str = Field(foreign_key = "user.email")
+    user : Optional["User"] = Relationship(back_populates="chat_history")
     file_key : str
     data : dict =Field(sa_column= Column(JSON))
     timestamp: datetime = Field(default_factory= datetime.utcnow)

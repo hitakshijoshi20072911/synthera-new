@@ -24,6 +24,7 @@ services:
       REDIS_URL : ${REDIS_URL}
       REDIS_PORT : ${REDIS_PORT}
       REDIS_PASSWORD : ${REDIS_PASSWORD}
+      NEON_URL: ${NEON_URL}
     depends_on:
       - rabbitmq
     restart : always

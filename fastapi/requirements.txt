@@ -22,5 +22,5 @@ pandas
 jinja2
 sqlmodel
 duckduckgo-search
-
+psycopg2-binary
 beautifulsoup4

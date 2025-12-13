@@ -30,11 +30,12 @@ redis_client = Redis(
 
 class UserInput(BaseModel):
     user_input: str
-
-
 fast_app = FastAPI()
+@fast_app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
 @fast_app.post("/agent-run")
-async def run_agent(payload: UserInput, user=Depends(get_current_user), session:SessionDep=Depends(get_session)):
+async def run_agent(payload: UserInput, user=Depends(get_current_user), session:SessionDep= None):
     try:
         content_hash = hashlib.sha256(f"{user['sub']}::{payload.user_input}".encode()).hexdigest()
         cached = redis_client.get(content_hash)
