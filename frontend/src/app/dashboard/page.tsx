@@ -1,3 +1,247 @@
+// "use client";
+
+// import { useState } from "react";
+// import { useRouter } from "next/navigation";
+// import { fetchAuthSession, signOut } from "aws-amplify/auth";
+// import ReactMarkdown from "react-markdown";
+// import {
+//   FiPlus,
+//   FiBook,
+//   FiArrowRight,
+//   FiBell,
+//   FiSun,
+//   FiMoon,
+//   FiMenu,
+//   FiX,
+// } from "react-icons/fi";
+
+// export default function ChatPage() {
+//   const router = useRouter();
+
+//   const [query, setQuery] = useState("");
+//   const [darkMode, setDarkMode] = useState(true);
+//   const [sidebarOpen, setSidebarOpen] = useState(true);
+//   const [loading, setLoading] = useState(false);
+//   const [result, setResult] = useState<any>(null);
+//   const [emailSent, setEmailSent] = useState(false);
+
+//   const [historyOpen, setHistoryOpen] = useState(false);
+//   const [history, setHistory] = useState<any[]>([]);
+
+//   const toggleTheme = () => setDarkMode(!darkMode);
+//   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
+//   const handleLogout = async () => {
+//     await signOut();
+//     router.push("/");
+//   };
+
+//   const fetchHistory = async () => {
+//     const session = await fetchAuthSession();
+//     const token = session.tokens?.idToken?.toString();
+
+//     const res = await fetch("https://synthera-django-777268942678.asia-south1.run.app/api/chat-history", {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     const json = await res.json();
+//     setHistory(json);
+//     setHistoryOpen(true);
+//   };
+
+//   const runAgent = async () => {
+//     if (!query.trim()) return;
+
+//     setLoading(true);
+//     setResult(null);
+//     setEmailSent(false);
+
+//     const session = await fetchAuthSession();
+//     const token = session.tokens?.idToken?.toString();
+
+//     const res = await fetch(
+//       "/api/proxy/agent-run",
+//       {
+//         method: "POST",
+//         headers: {
+//     "Content-Type": "application/json",
+//     Authorization: `Bearer ${token}`,
+//   },
+//         body: JSON.stringify({ user_input: query }),
+//       }
+//     );
+
+//     const json = await res.json();
+
+//     if (json.status === "success") {
+//       setResult(json.data);
+//       setEmailSent(true);
+//     }
+
+//     setLoading(false);
+//   };
+
+//   return (
+//     <div className={`min-h-screen ${darkMode ? "bg-black text-white" : "bg-white text-black"} flex`}>
+//       {/* Sidebar */}
+//       <aside
+//         className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 ${
+//           sidebarOpen ? "w-64" : "w-16"
+//         } ${darkMode ? "bg-gray-900" : "bg-gray-100"} border-r p-4`}
+//       >
+//         <div className="flex justify-between items-center mb-6">
+//           <h1 className="font-bold">{sidebarOpen ? "Synthera" : "🧪"}</h1>
+//           <button onClick={toggleSidebar}>
+//             {sidebarOpen ? <FiX /> : <FiMenu />}
+//           </button>
+//         </div>
+
+//         <div className="space-y-4 text-sm">
+//           <div className="flex gap-2 items-center">
+//             <FiPlus /> {sidebarOpen && "New Query"}
+//           </div>
+//           <div
+//             className="flex gap-2 items-center cursor-pointer hover:opacity-80"
+//             onClick={fetchHistory}
+//           >
+//             <FiBook /> {sidebarOpen && "History"}
+//           </div>
+//         </div>
+//       </aside>
+
+//       {/* Main */}
+//       <main className={`flex-1 px-6 py-8 ${sidebarOpen ? "ml-64" : "ml-16"}`}>
+//         {/* Top bar */}
+//         <div className="flex justify-end gap-4 mb-6">
+//           <FiBell />
+//           <button onClick={toggleTheme}>
+//             {darkMode ? <FiSun /> : <FiMoon />}
+//           </button>
+//           <button
+//             onClick={handleLogout}
+//             className="text-xs bg-purple-600 px-3 py-1 rounded"
+//           >
+//             Sign out
+//           </button>
+//         </div>
+
+//         {/* Input */}
+//         <div className="max-w-3xl mx-auto mb-6">
+//           <div className={`flex items-center rounded-full px-4 py-3 ${darkMode ? "bg-gray-800" : "bg-gray-200"}`}>
+//             <input
+//               className="flex-1 bg-transparent outline-none"
+//               placeholder="Ask a medical / market intelligence question"
+//               value={query}
+//               onChange={(e) => setQuery(e.target.value)}
+//               disabled={loading}
+//             />
+//             <button onClick={runAgent} disabled={loading}>
+//               <FiArrowRight className={loading ? "animate-spin" : ""} />
+//             </button>
+//           </div>
+//         </div>
+
+//         {emailSent && (
+//           <div className="max-w-3xl mx-auto mb-4 bg-green-600/20 border border-green-500 p-3 rounded text-sm">
+//             📧 Report link sent to your email
+//           </div>
+//         )}
+
+//         {result && (
+//           <div className="max-w-4xl mx-auto space-y-8">
+//             {result.web && (
+//               <section>
+//                 <h2 className="text-xl font-semibold mb-2">🌐 Web Intelligence</h2>
+//                 <div className="prose prose-invert max-w-none">
+//                   <ReactMarkdown>{result.web}</ReactMarkdown>
+//                 </div>
+//               </section>
+//             )}
+
+//             {result.clinical?.active_trials && (
+//               <section>
+//                 <h2 className="text-xl font-semibold mb-2">🧪 Clinical Trials</h2>
+//                 <table className="w-full text-sm border border-gray-700">
+//                   <thead>
+//                     <tr className="bg-gray-800">
+//                       <th className="p-2">Title</th>
+//                       <th>Phase</th>
+//                       <th>Sponsor</th>
+//                       <th>Status</th>
+//                     </tr>
+//                   </thead>
+//                   <tbody>
+//                     {result.clinical.active_trials.map((t: any) => (
+//                       <tr key={t.nct_id} className="border-t border-gray-700">
+//                         <td className="p-2">{t.title}</td>
+//                         <td>{t.phase}</td>
+//                         <td>{t.sponsor}</td>
+//                         <td>{t.status}</td>
+//                       </tr>
+//                     ))}
+//                   </tbody>
+//                 </table>
+//               </section>
+//             )}
+
+//             {result.pdf_url && (
+//               <a
+//                 href={result.pdf_url}
+//                 target="_blank"
+//                 className="inline-block bg-purple-600 px-4 py-2 rounded"
+//               >
+//                 📄 Download PDF
+//               </a>
+//             )}
+//           </div>
+//         )}
+//       </main>
+
+//       {/* History Drawer */}
+//       {historyOpen && (
+//         <div className="fixed top-0 right-0 h-full w-96 bg-gray-900 border-l p-4 z-50 overflow-y-auto">
+//           <div className="flex justify-between mb-4">
+//             <h2 className="font-semibold">🕒 Chat History</h2>
+//             <button onClick={() => setHistoryOpen(false)}>
+//               <FiX />
+//             </button>
+//           </div>
+
+//           <div className="space-y-3">
+//             {history.map((h) => (
+//               <div
+//                 key={h.id}
+//                 className="p-3 bg-gray-800 rounded cursor-pointer hover:bg-gray-700"
+//                 onClick={() => {
+//                   setResult(h.data);
+//                   setHistoryOpen(false);
+//                 }}
+//               >
+//                 <div className="text-xs opacity-60">
+//                   {new Date(h.timestamp).toLocaleString()}
+//                 </div>
+//                 <div className="text-sm font-medium truncate">
+//                   {h.data.user_input}
+//                 </div>
+//                 <a
+//                   href={h.file_url}
+//                   target="_blank"
+//                   className="text-xs text-purple-400"
+//                   onClick={(e) => e.stopPropagation()}
+//                 >
+//                   📄 PDF
+//                 </a>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
 "use client";
 
 import { useState } from "react";
@@ -40,11 +284,14 @@ export default function ChatPage() {
     const session = await fetchAuthSession();
     const token = session.tokens?.idToken?.toString();
 
-    const res = await fetch("https://synthera-django-777268942678.asia-south1.run.app/api/chat-history", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await fetch(
+      "https://synthera-django-777268942678.asia-south1.run.app/api/chat-history",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const json = await res.json();
     setHistory(json);
@@ -61,17 +308,14 @@ export default function ChatPage() {
     const session = await fetchAuthSession();
     const token = session.tokens?.idToken?.toString();
 
-    const res = await fetch(
-      "/api/proxy/agent-run",
-      {
-        method: "POST",
-        headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  },
-        body: JSON.stringify({ user_input: query }),
-      }
-    );
+    const res = await fetch("/api/proxy/agent-run", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ user_input: query }),
+    });
 
     const json = await res.json();
 
@@ -84,12 +328,18 @@ export default function ChatPage() {
   };
 
   return (
-    <div className={`min-h-screen ${darkMode ? "bg-black text-white" : "bg-white text-black"} flex`}>
+    <div
+      className={`min-h-screen ${
+        darkMode ? "bg-black text-white" : "bg-white text-black"
+      } flex`}
+    >
       {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 ${
           sidebarOpen ? "w-64" : "w-16"
-        } ${darkMode ? "bg-gray-900" : "bg-gray-100"} border-r p-4`}
+        } ${
+          darkMode ? "bg-gray-900" : "bg-gray-100"
+        } border-r p-4`}
       >
         <div className="flex justify-between items-center mb-6">
           <h1 className="font-bold">{sidebarOpen ? "Synthera" : "🧪"}</h1>
@@ -112,7 +362,11 @@ export default function ChatPage() {
       </aside>
 
       {/* Main */}
-      <main className={`flex-1 px-6 py-8 ${sidebarOpen ? "ml-64" : "ml-16"}`}>
+      <main
+        className={`flex-1 px-6 py-8 ${
+          sidebarOpen ? "ml-64" : "ml-16"
+        }`}
+      >
         {/* Top bar */}
         <div className="flex justify-end gap-4 mb-6">
           <FiBell />
@@ -129,7 +383,11 @@ export default function ChatPage() {
 
         {/* Input */}
         <div className="max-w-3xl mx-auto mb-6">
-          <div className={`flex items-center rounded-full px-4 py-3 ${darkMode ? "bg-gray-800" : "bg-gray-200"}`}>
+          <div
+            className={`flex items-center rounded-full px-4 py-3 ${
+              darkMode ? "bg-gray-800" : "bg-gray-200"
+            }`}
+          >
             <input
               className="flex-1 bg-transparent outline-none"
               placeholder="Ask a medical / market intelligence question"
@@ -138,10 +396,24 @@ export default function ChatPage() {
               disabled={loading}
             />
             <button onClick={runAgent} disabled={loading}>
-              <FiArrowRight className={loading ? "animate-spin" : ""} />
+              {loading ? (
+                <div className="w-5 h-5 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <FiArrowRight />
+              )}
             </button>
           </div>
         </div>
+
+        {/* Skeleton Loader */}
+        {loading && !result && (
+          <div className="max-w-4xl mx-auto space-y-4 animate-pulse">
+            <div className="h-6 bg-gray-700 rounded w-1/3" />
+            <div className="h-4 bg-gray-700 rounded w-full" />
+            <div className="h-4 bg-gray-700 rounded w-5/6" />
+            <div className="h-4 bg-gray-700 rounded w-2/3" />
+          </div>
+        )}
 
         {emailSent && (
           <div className="max-w-3xl mx-auto mb-4 bg-green-600/20 border border-green-500 p-3 rounded text-sm">
@@ -150,10 +422,12 @@ export default function ChatPage() {
         )}
 
         {result && (
-          <div className="max-w-4xl mx-auto space-y-8">
+          <div className="max-w-4xl mx-auto space-y-8 animate-fadeIn">
             {result.web && (
               <section>
-                <h2 className="text-xl font-semibold mb-2">🌐 Web Intelligence</h2>
+                <h2 className="text-xl font-semibold mb-2">
+                  🌐 Web Intelligence
+                </h2>
                 <div className="prose prose-invert max-w-none">
                   <ReactMarkdown>{result.web}</ReactMarkdown>
                 </div>
@@ -162,7 +436,9 @@ export default function ChatPage() {
 
             {result.clinical?.active_trials && (
               <section>
-                <h2 className="text-xl font-semibold mb-2">🧪 Clinical Trials</h2>
+                <h2 className="text-xl font-semibold mb-2">
+                  🧪 Clinical Trials
+                </h2>
                 <table className="w-full text-sm border border-gray-700">
                   <thead>
                     <tr className="bg-gray-800">
@@ -174,7 +450,10 @@ export default function ChatPage() {
                   </thead>
                   <tbody>
                     {result.clinical.active_trials.map((t: any) => (
-                      <tr key={t.nct_id} className="border-t border-gray-700">
+                      <tr
+                        key={t.nct_id}
+                        className="border-t border-gray-700"
+                      >
                         <td className="p-2">{t.title}</td>
                         <td>{t.phase}</td>
                         <td>{t.sponsor}</td>
@@ -201,7 +480,7 @@ export default function ChatPage() {
 
       {/* History Drawer */}
       {historyOpen && (
-        <div className="fixed top-0 right-0 h-full w-96 bg-gray-900 border-l p-4 z-50 overflow-y-auto">
+        <div className="fixed top-0 right-0 h-full w-96 bg-gray-900 border-l p-4 z-50 overflow-y-auto animate-slideIn">
           <div className="flex justify-between mb-4">
             <h2 className="font-semibold">🕒 Chat History</h2>
             <button onClick={() => setHistoryOpen(false)}>
@@ -238,6 +517,47 @@ export default function ChatPage() {
           </div>
         </div>
       )}
+
+      {/* Global Loader Overlay */}
+      {loading && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-purple-200 animate-pulse">
+              Running agent, generating intelligence…
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Animations */}
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(6px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+          from {
+            transform: translateX(100%);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+        .animate-slideIn {
+          animation: slideIn 0.25s ease-out;
+        }
+      `}</style>
     </div>
   );
 }
