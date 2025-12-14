@@ -40,7 +40,7 @@ export default function ChatPage() {
     const session = await fetchAuthSession();
     const token = session.tokens?.idToken?.toString();
 
-    const res = await fetch("https://urban-broccoli-69r56vr6v7w62575w-8000.app.github.dev/api/chat-history", {
+    const res = await fetch("https://synthera-django-777268942678.asia-south1.run.app/api/chat-history", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -62,7 +62,7 @@ export default function ChatPage() {
     const token = session.tokens?.idToken?.toString();
 
     const res = await fetch(
-      "https://urban-broccoli-69r56vr6v7w62575w-8080.app.github.dev/agent-run",
+      "https://fastapi-synthera-777268942678.asia-south1.run.app/agent-run",
       {
         method: "POST",
         headers: {
