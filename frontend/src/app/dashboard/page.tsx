@@ -62,7 +62,7 @@ export default function ChatPage() {
     const token = session.tokens?.idToken?.toString();
 
     const res = await fetch(
-      "https://fastapi-synthera-777268942678.asia-south1.run.app/agent-run",
+      "http://3.111.30.223:8080/agent-run",
       {
         method: "POST",
         headers: {
