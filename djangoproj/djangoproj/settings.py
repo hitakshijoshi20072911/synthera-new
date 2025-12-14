@@ -34,12 +34,16 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "https://synthera-new.vercel.app",
     "http://localhost:3000",
-    "https://urban-broccoli-69r56vr6v7w62575w-3000.app.github.dev"
+    "https://urban-broccoli-69r56vr6v7w62575w-3000.app.github.dev",
+    "https://fastapi-synthera-777268942678.asia-south1.run.app",
+    "https://synthera-django-777268942678.asia-south1.run.app",
 ]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "https://*.app.github.dev",
     "https://synthera-new.vercel.app",
+    "https://fastapi-synthera-777268942678.asia-south1.run.app",
+    "https://synthera-django-777268942678.asia-south1.run.app",
 
 ]
 SESSION_COOKIE_SAMESITE = 'None'

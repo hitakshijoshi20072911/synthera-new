@@ -98,7 +98,8 @@ fast_app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://urban-broccoli-69r56vr6v7w62575w-3000.app.github.dev"
+        "https://urban-broccoli-69r56vr6v7w62575w-3000.app.github.dev",
+        "https://synthera-new.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
