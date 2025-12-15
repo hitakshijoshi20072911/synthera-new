@@ -6,7 +6,7 @@ export async function POST(req: Request) {
   const authHeader = req.headers.get("authorization") || "";
 
   const res = await fetch(
-    "http://13.235.83.227:8080/agent-run",
+    "http://13.203.154.8:8080/agent-run",
     {
       method: "POST",
       headers: {
