@@ -3,6 +3,7 @@ Perfect — below is a **proper, detailed, production-grade README “System Arc
 It is written in **clear technical language**, suitable for **evaluators, recruiters, open-source users, or investors**.
 
 # System Architecture
+<img width="1030" height="320" alt="image" src="https://github.com/user-attachments/assets/aeedde05-9adf-4065-ab82-d95b30981a0e" />
 
 This system is designed as a **secure, scalable, and agent-driven architecture** for authenticated data processing, intelligent task orchestration, report generation, and user notifications. The architecture follows a **loosely coupled, event-driven design** to ensure reliability and extensibility.
 
@@ -130,20 +131,7 @@ This system is designed as a **secure, scalable, and agent-driven architecture**
 * Production-Ready – Uses battle-tested cloud services.
 
 
-#  Suggested Repository Structure
 
-
-.
-├── backend/
-│   ├── api/
-│   ├── agents/
-│   ├── services/
-│   └── main.py
-├── docs/
-│   └── system-architecture.png
-├── infrastructure/
-│   └── cloud-configs/
-├── README.md
 
 
 
