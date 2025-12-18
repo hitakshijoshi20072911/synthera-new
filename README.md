@@ -1,6 +1,4 @@
 # synthera-new
-Perfect — below is a **proper, detailed, production-grade README “System Architecture” section** that you can **directly paste** into your README.md.
-It is written in **clear technical language**, suitable for **evaluators, recruiters, open-source users, or investors**.
 
 # System Architecture
 <img width="1030" height="320" alt="image" src="https://github.com/user-attachments/assets/aeedde05-9adf-4065-ab82-d95b30981a0e" />
