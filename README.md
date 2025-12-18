@@ -12,18 +12,18 @@ This system is designed as a **secure, scalable, and agent-driven architecture**
 [https://app.eraser.io/workspace/cwYBuzNqWJcuLDUH4jne?origin=share](https://app.eraser.io/workspace/cwYBuzNqWJcuLDUH4jne?origin=share)
 
 # Tech stack
-Frontend : NextJS
-Backend Services : Django Ninja, fastAPI
-Common Database: Neon (Serverless PostgreSQL)
-Task Broker : GCP Pub/Sub
-Caching : Redis Cloud
-Authentication : Amazon Cognito
-Agentic Framework : LangGraph
-Containerization : Docker
-Deployments : GCP Cloud Run, Vercel
-File storage: Amazon S3
-Email Service : Amazon SES
-Task Runners: Celery
+1. Frontend : NextJS
+2. Backend Services : Django Ninja, fastAPI
+3. Common Database: Neon (Serverless PostgreSQL)
+4. Task Broker : GCP Pub/Sub
+5. Caching : Redis Cloud
+6. Authentication : Amazon Cognito
+7. AI Agent Layer : Strands Framework
+8. Containerization : Docker
+9. Deployments : GCP Cloud Run, Vercel
+10. File storage : Amazon S3
+11. Email Service : Amazon SES
+12. Task runner: Celery
 
 #  Key Architectural Benefits
 
