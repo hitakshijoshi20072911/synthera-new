@@ -220,6 +220,3 @@ def get_users(db: Session=Depends(get_db)):
     return {"message": f"total number of users: {users}"}
 
 
-
-
-
