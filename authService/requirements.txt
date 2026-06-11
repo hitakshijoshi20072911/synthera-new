@@ -1,0 +1,14 @@
+uvicorn
+fastapi
+python-dotenv
+PyJWT
+prometheus-client
+psycopg2-binary
+sqlalchemy
+opentelemetry-sdk
+opentelemetry-api
+opentelemetry-exporter-otlp
+opentelemetry-instrumentation-fastapi
+opentelemetry-instrumentation-sqlalchemy
+redis
+python-dotenv

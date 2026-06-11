@@ -3,6 +3,11 @@
 This project is currently being revamped. Changes:
 1. Migration to individual worker services from a single langGraph worker.
 2. Migration to Kubernetes based infra
+
+# CURRENT-STATUS
+1. Dedicated custom auth service done
+2. Architecture modified (click on the below eraser.io link to view)
+3. Django service purged 
    
 # System Architecture
 <img width="1030" height="320" alt="image" src="https://github.com/user-attachments/assets/aeedde05-9adf-4065-ab82-d95b30981a0e" />
