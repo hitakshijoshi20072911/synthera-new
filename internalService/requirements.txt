@@ -1,5 +1,6 @@
-uvicorn
 fastapi
+uvicorn
+redis
 python-dotenv
 PyJWT
 prometheus-client
@@ -10,5 +11,4 @@ opentelemetry-api
 opentelemetry-exporter-otlp
 opentelemetry-instrumentation-fastapi
 opentelemetry-instrumentation-sqlalchemy
-redis
-argon2-cffi
+

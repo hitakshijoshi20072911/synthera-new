@@ -40,10 +40,11 @@ async def file_info(request: Request, db:Session=Depends(get_db)):
         db.refresh(db_note)
         redis_client.setex(f"job:{job_id}", 86400, json.dumps({"username": username, "file_key": file_key}))
         logger.info(json.dumps({"event": "redis_publish", "job_id": job_id}))
-        return {"message": "successfully queued"}
+        return {"message": "successfully queued", "job_id": job_id}
     except Exception as e:
         logger.error(json.dumps({"event": "bff_service_error", "error": str(e)}))
         raise HTTPException(status_code=500, detail="error fetching")
+
 
         
         
