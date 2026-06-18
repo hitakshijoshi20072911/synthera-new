@@ -122,9 +122,9 @@ def logi(payload:LoginSchema,response: Response, db:Session=Depends(get_db)):
         try:
             ph.verify(passw, password)
             pay= {"iss": "auth-service", "sub": username, "exp": datetime.utcnow()+timedelta(minutes=15)}
-            token=jwt.encode(pay, "supersecret", algorithm="HS256")
+            token=jwt.encode(pay, "supersecret", algorithms=["HS256"])
             pay1= {"iss": "auth-service", "sub": username, "exp": datetime.utcnow()+timedelta(days=7)}
-            refresh_token=jwt.encode(pay1, "supersecret", algorithm="HS256")
+            refresh_token=jwt.encode(pay1, "supersecret", algorithms=["HS256"])
             response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="lax", max_age=604800)
             db_no=RefreshTokens(user_username=user.username, token_hash= hashlib.sha256(refresh_token.encode()).hexdigest(), expires_at=datetime.utcnow()+timedelta(days=7), revoked=False)
             db.add(db_no)
@@ -177,7 +177,7 @@ def dele(request: Request, db: Session=Depends(get_db)):
     if schema.lower() != "bearer":
         logger.warning(json.dumps({"event": "invalid_token"}))
         raise HTTPException(status_code=401, detail="invalid token format")
-    pay = jwt.decode(token, "supersecret", algorithm="HS256")
+    pay = jwt.decode(token, "supersecret", algorithms=["HS256"])
     username=pay["sub"]
     user=db.query(Users).filter(Users.username==username).first()
     db.delete(user)

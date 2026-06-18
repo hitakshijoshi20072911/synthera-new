@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request, Depends, WebSocket, WebSocketException, status, WebSocketDisconnect
 from datetime import datetime
 import os, json, logging, jwt, uuid
+from kafka import KafkaProducer
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
@@ -9,10 +10,13 @@ from database import sessionLocal, History
 from redis import Redis
 from datetime import datetime, timedelta
 from langchain_groq import ChatGroq
+from kafka import KafkaProducer
 llm=ChatGroq(model="llama-3.3-70b-versatile", api_key=os.getenv("GROQ_API_KEY"))
 load_dotenv()
 app = FastAPI()
 redis_client=Redis(host=os.getenv("REDIS_HOST"), port=int(os.getenv("REDIS_PORT")), password=os.getenv("REDIS_PASSWORD"), decode_responses=True)
+BOOTSTRAP_SERVER=""  #TODO: fill it after kafka helm chart installation
+producer=KafkaProducer(bootstrap_servers=BOOTSTRAP_SERVER, value_serializer= lambda v: json.dumps(v).encode("utf-8"))
 class WebSchema(BaseModel):
     text: str
     molecule: Optional[str]=None
@@ -124,16 +128,22 @@ async def exin(db:Session=Depends(get_db), websocket: WebSocket):
                 continue
             active_jobs[job_id]=websocket
             redis_client.hset(f"task:{job_id}", mapping={"username": username, "query": text, "status": "running", "iqvia_status": "pending", "exim_status": "pending", "patent_status": "pending", "clinical_status": "pending", "web_status": "pending", "report_status": "pending", "created_at": datetime.utcnow().isoformat()})
+            event = {"user_input": text, "job_id": job_id}
             if "iqvia" in subtasks:
-                pass #kafka prod code 
+                producer.send("iqvia-topic", key=job_id.encode(), value=event)
+                producer.flush()
             if "exim" in subtasks:
-                pass #kafka code TODO
+                producer.send("exim-topic", key=job_id.encode(), value=event)
+                producer.flush()
             if "patent" in subtasks:
-                pass 
+                producer.send("patent-topic", key=job_id.encode(), value=event)
+                producer.flush()
             if "clinical" in subtasks:
-                pass
+                producer.send("clinical-topic", key=job_id.encode(), value=event)
+                producer.flush()
             if "web" in subtasks:
-                pass
+                producer.send("web-topic", key=job_id.encode(), value=event)
+                producer.flush()
             await websocket.send_json({"job_id": job_id, "status": "queued", "workers": subtasks})
     except WebSocketDisconnect:
         pass

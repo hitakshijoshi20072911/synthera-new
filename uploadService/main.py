@@ -58,7 +58,7 @@ def uplod(payload: UploadSchema,request: Request,  db:Session=Depends(get_db)):
     if schema.lower() != "bearer":
         logger.warning(json.dumps({"event": "invalid_token_format"}))
         raise HTTPException(status_code=401, detail="invalid token format")
-    pay=jwt.decode(token, "supersecret", algorithm="HS256")
+    pay=jwt.decode(token, "supersecret", algorithms=["HS256"])
     username=pay["sub"]
     job_id=str(uuid.uuid4())
     file_id=str(uuid.uuid4())
@@ -101,7 +101,7 @@ def getfi(request: Request, db:Session=Depends(get_db)):
     if schema.lower() != "bearer":
         logger.warning(json.dumps({"event": "invalid_token_format"}))
         raise HTTPException(status_code=401, detail="invalid token format")
-    pay=jwt.decode(token, "supersecret", algorithm="HS256")
+    pay=jwt.decode(token, "supersecret", algorithms=["HS256"])
     username=pay["sub"]
     files= db.query(Files).filter(Files.user==username).all()
     if not files:
@@ -121,7 +121,7 @@ def delfi(request: Request, db:Session=Depends(get_db), file_key: str):
     if schema.lower() != "bearer":
         logger.warning(json.dumps({"event": "invalid_token_format"}))
         raise HTTPException(status_code=401, detail="invalid token format")
-    pay=jwt.decode(token, "supersecret", algorithm="HS256")
+    pay=jwt.decode(token, "supersecret", algorithms=["HS256"])
     username=pay["sub"]
     file=db.query(Files).filter(Files.user==username, Files.file_key==file_key).first()
     if not file:
