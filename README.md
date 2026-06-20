@@ -8,24 +8,21 @@ This project is currently being revamped. Changes:
 # Revamped Architecture
 ![System Architecture](./docs/arc.png)
    
-# System Architecture
+# Old architecture
 <img width="1030" height="320" alt="image" src="https://github.com/user-attachments/assets/aeedde05-9adf-4065-ab82-d95b30981a0e" />
-
- # High-Level Architecture Diagram
 
  # Interactive diagram (Eraser):
 [https://app.eraser.io/workspace/cwYBuzNqWJcuLDUH4jne?origin=share](https://app.eraser.io/workspace/cwYBuzNqWJcuLDUH4jne?origin=share)
 
 # Tech stack
 1. Frontend : NextJS
-2. Backend Services : Django Ninja, fastAPI
-3. Common Database: Neon (Serverless PostgreSQL)
-4. Task Broker : GCP Pub/Sub
+2. Backend Services : FastAPI
+3. Common Database: postgreSQL
+4. Queue system : Kafka 
 5. Caching : Redis Cloud
-6. Authentication : Amazon Cognito
-7. Agentic system framework : LangGraph 
+6. Authentication : Custom fine grained auth
 8. Containerization : Docker
-9. Deployments : GCP Cloud Run, Vercel, Amazon EC2
+9. Deployments : Kubernetes (to be deployed on GKE)
 10. File storage : Amazon S3
 11. Email Service : Amazon SES
 12. Task runner: Celery
